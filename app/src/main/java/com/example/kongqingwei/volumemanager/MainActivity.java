@@ -6,10 +6,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 
-import com.bitmain.volumemanagerlibrary.AudioFlagEnum;
-import com.bitmain.volumemanagerlibrary.AudioModeEnum;
-import com.bitmain.volumemanagerlibrary.OnVolumeChangeListener;
-import com.bitmain.volumemanagerlibrary.VolumeManager;
+import com.kongqw.volumemanagerlibrary.AudioFlagEnum;
+import com.kongqw.volumemanagerlibrary.AudioModeEnum;
+import com.kongqw.volumemanagerlibrary.OnVolumeChangeListener;
+import com.kongqw.volumemanagerlibrary.VolumeManager;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 

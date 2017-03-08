@@ -1,4 +1,4 @@
-package com.bitmain.volumemanagerlibrary;
+package com.kongqw.volumemanagerlibrary;
 
 /**
  * Created by kongqw on 2017/3/1.

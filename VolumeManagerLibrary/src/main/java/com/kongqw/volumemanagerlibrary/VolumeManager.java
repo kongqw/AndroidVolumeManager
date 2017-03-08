@@ -1,4 +1,4 @@
-package com.bitmain.volumemanagerlibrary;
+package com.kongqw.volumemanagerlibrary;
 
 import android.content.Context;
 import android.media.AudioManager;
