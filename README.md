@@ -1,0 +1,83 @@
+# 音量控制
+
+## 初始化
+
+``` java
+volumeManager = new VolumeManager(getApplicationContext());
+```
+
+## 音量监听
+
+``` java
+volumeManager.setOnVolumeChangeListener(new OnVolumeChangeListener() {
+    @Override
+    public void onVolumeUp(int volume) {
+        Log.i(TAG, "onVolumeUp: " + volume);
+    }
+
+    @Override
+    public void onVolumeSame(int volume) {
+        Log.i(TAG, "onVolumeSame: " + volume);
+    }
+
+    @Override
+    public void onVolumeDown(int volume) {
+        Log.i(TAG, "onVolumeDown: " + volume);
+    }
+
+    @Override
+    public void onMaxVolume() {
+        Log.i(TAG, "onMaxVolume: ");
+    }
+
+    @Override
+    public void onMinVolume() {
+        Log.i(TAG, "onMinVolume: ");
+    }
+});
+```
+
+## 增大音量
+``` java
+volumeManager.volumeUp();
+```
+
+## 减小音量
+``` java
+volumeManager.volumeDown();
+```
+
+## 设置音量
+``` java
+volumeManager.setVolume(10);
+```
+
+## 设置控制音量模式
+
+默认即控制媒体音量
+
+- AudioModeEnum.STREAM_ALARM(AudioManager.STREAM_ALARM)
+- AudioModeEnum.STREAM_DTMF(AudioManager.STREAM_DTMF)
+- AudioModeEnum.STREAM_MUSIC(AudioManager.STREAM_MUSIC)
+- AudioModeEnum.STREAM_NOTIFICATION(AudioManager.STREAM_NOTIFICATION)
+- AudioModeEnum.STREAM_RING(AudioManager.STREAM_RING)
+- AudioModeEnum.STREAM_SYSTEM(AudioManager.STREAM_SYSTEM)
+- AudioModeEnum.STREAM_VOICE_CALL(AudioManager.STREAM_VOICE_CALL)
+
+``` java
+volumeManager.setMode(AudioModeEnum.STREAM_MUSIC);
+```
+
+## 设置响应模式
+
+默认即显示UI
+
+- AudioFlagEnum.FLAG_ALLOW_RINGER_MODES(AudioManager.FLAG_ALLOW_RINGER_MODES)
+- AudioFlagEnum.FLAG_PLAY_SOUND(AudioManager.FLAG_PLAY_SOUND)
+- AudioFlagEnum.FLAG_REMOVE_SOUND_AND_VIBRATE(AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE)
+- AudioFlagEnum.FLAG_SHOW_UI(AudioManager.FLAG_SHOW_UI)
+- AudioFlagEnum.FLAG_VIBRATE(AudioManager.FLAG_VIBRATE)
+
+``` java
+volumeManager.setFlag(AudioFlagEnum.FLAG_SHOW_UI);
+```

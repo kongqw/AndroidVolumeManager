@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -16,11 +15,59 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="volumeUp"
-        android:text="增加音量"/>
+        android:text="增加音量" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="volumeDown"
-        android:text="减小音量"/>
+        android:text="减小音量" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/rb_stream_alarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="STREAM_ALARM" />
+
+        <RadioButton
+            android:id="@+id/rb_stream_dtmf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="STREAM_DTMF" />
+
+        <RadioButton
+            android:id="@+id/rb_stream_music"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="STREAM_MUSIC" />
+
+        <RadioButton
+            android:id="@+id/rb_stream_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="STREAM_NOTIFICATION" />
+
+        <RadioButton
+            android:id="@+id/rb_stream_ring"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="STREAM_RING" />
+
+        <RadioButton
+            android:id="@+id/rb_stream_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="STREAM_SYSTEM" />
+
+        <RadioButton
+            android:id="@+id/rb_stream_voice_call"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="STREAM_VOICE_CALL" />
+    </RadioGroup>
+
 </LinearLayout>

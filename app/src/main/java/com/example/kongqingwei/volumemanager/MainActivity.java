@@ -4,11 +4,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.RadioButton;
 
+import com.bitmain.volumemanagerlibrary.AudioFlagEnum;
+import com.bitmain.volumemanagerlibrary.AudioModeEnum;
+import com.bitmain.volumemanagerlibrary.OnVolumeChangeListener;
 import com.bitmain.volumemanagerlibrary.VolumeManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "MainActivity";
     private VolumeManager volumeManager;
@@ -18,10 +21,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        volumeManager = new VolumeManager(getApplicationContext()) {
+        findViewById(R.id.rb_stream_alarm).setOnClickListener(this);
+        findViewById(R.id.rb_stream_dtmf).setOnClickListener(this);
+        findViewById(R.id.rb_stream_music).setOnClickListener(this);
+        ((RadioButton) findViewById(R.id.rb_stream_music)).setChecked(true);
+        findViewById(R.id.rb_stream_notification).setOnClickListener(this);
+        findViewById(R.id.rb_stream_ring).setOnClickListener(this);
+        findViewById(R.id.rb_stream_system).setOnClickListener(this);
+        findViewById(R.id.rb_stream_voice_call).setOnClickListener(this);
+
+        volumeManager = new VolumeManager(getApplicationContext());
+        volumeManager.setOnVolumeChangeListener(new OnVolumeChangeListener() {
             @Override
             public void onVolumeUp(int volume) {
                 Log.i(TAG, "onVolumeUp: " + volume);
+            }
+
+            @Override
+            public void onVolumeSame(int volume) {
+                Log.i(TAG, "onVolumeSame: " + volume);
             }
 
             @Override
@@ -30,17 +48,18 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onVolumeMax(int volume) {
-                Log.i(TAG, "onVolumeMax: " + volume);
-                Toast.makeText(getApplicationContext(), "已经是最大音量:" + volume, Toast.LENGTH_SHORT).show();
+            public void onMaxVolume() {
+                Log.i(TAG, "onMaxVolume: ");
             }
 
             @Override
-            public void onVolumeMin(int volume) {
-                Log.i(TAG, "onVolumeMin: " + volume);
-                Toast.makeText(getApplicationContext(), "已经是最小音量:" + volume, Toast.LENGTH_SHORT).show();
+            public void onMinVolume() {
+                Log.i(TAG, "onMinVolume: ");
             }
-        };
+        });
+
+        volumeManager.setMode(AudioModeEnum.STREAM_MUSIC);
+        volumeManager.setFlag(AudioFlagEnum.FLAG_SHOW_UI);
     }
 
     /**
@@ -59,5 +78,34 @@ public class MainActivity extends AppCompatActivity {
      */
     public void volumeDown(View view) {
         volumeManager.volumeDown();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rb_stream_alarm:
+                volumeManager.setMode(AudioModeEnum.STREAM_ALARM);
+                break;
+            case R.id.rb_stream_dtmf:
+                volumeManager.setMode(AudioModeEnum.STREAM_DTMF);
+                break;
+            case R.id.rb_stream_music:
+                volumeManager.setMode(AudioModeEnum.STREAM_MUSIC);
+                break;
+            case R.id.rb_stream_notification:
+                volumeManager.setMode(AudioModeEnum.STREAM_NOTIFICATION);
+                break;
+            case R.id.rb_stream_ring:
+                volumeManager.setMode(AudioModeEnum.STREAM_RING);
+                break;
+            case R.id.rb_stream_system:
+                volumeManager.setMode(AudioModeEnum.STREAM_SYSTEM);
+                break;
+            case R.id.rb_stream_voice_call:
+                volumeManager.setMode(AudioModeEnum.STREAM_VOICE_CALL);
+                break;
+            default:
+                break;
+        }
     }
 }

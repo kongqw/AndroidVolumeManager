@@ -5,86 +5,135 @@ import android.media.AudioManager;
 
 /**
  * Created by kongqingwei on 2017/1/10.
+ * <p>
  * 音量管理者
  */
+public final class VolumeManager {
 
-public abstract class VolumeManager {
-
+    private OnVolumeChangeListener mOnVolumeChangeListener;
     private AudioManager mAudioManager;
-    private int mMaxVolume;
     private int STREAM_TYPE = AudioManager.STREAM_MUSIC;
     private int FLAGS = AudioManager.FLAG_SHOW_UI;
 
-
-    // 声音变大的回调
-    public abstract void onVolumeUp(int volume);
-
-    // 声音减小的回调
-    public abstract void onVolumeDown(int volume);
-
-    // 声音已经最大的回调
-    public abstract void onVolumeMax(int volume);
-
-    // 声音已经最小的回调
-    public abstract void onVolumeMin(int volume);
-
     public VolumeManager(Context context) {
-        init(context, FLAGS);
-    }
-
-    public VolumeManager(Context context, int flags) {
-        init(context, flags);
-    }
-
-    private void init(Context context, int flags) {
-        FLAGS = flags;
         // 多媒体管理器
-        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-
+        mAudioManager = (AudioManager) context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        // 设置音频模式
         if (STREAM_TYPE != mAudioManager.getMode()) {
             mAudioManager.setMode(STREAM_TYPE);
         }
-        // 最大音量
-        mMaxVolume = mAudioManager.getStreamMaxVolume(STREAM_TYPE);
     }
 
     /**
-     * 控制增加音量
+     * Sets the audio mode.
+     *
+     * @param mode mode
+     */
+    public void setMode(AudioModeEnum mode) {
+        STREAM_TYPE = mode.getMode();
+        // 设置音频模式
+        if (STREAM_TYPE != mAudioManager.getMode()) {
+            mAudioManager.setMode(STREAM_TYPE);
+        }
+    }
+
+    /**
+     * 设置Flag
+     *
+     * @param flag flag
+     */
+    public void setFlag(AudioFlagEnum flag) {
+        FLAGS = flag.getFlag();
+    }
+
+    /**
+     * 设置音量
+     *
+     * @param volume 音量
+     */
+    public void setVolume(int volume) {
+        // 获取最大音量
+        int maxVolume = mAudioManager.getStreamMaxVolume(STREAM_TYPE);
+        // 当前音量
+        int streamVolume = mAudioManager.getStreamVolume(STREAM_TYPE);
+        // 可设置音量的范围[0, maxVolume]
+        int targetVolume = volume <= 0 ? (volume <= maxVolume ? volume : maxVolume) : 0;
+
+        if (streamVolume == targetVolume) {
+            // 音量不变
+            if (null != mOnVolumeChangeListener) {
+                mOnVolumeChangeListener.onVolumeSame(targetVolume);
+            }
+        } else if (streamVolume < targetVolume) {
+            // 设置音量
+            mAudioManager.setStreamVolume(STREAM_TYPE, targetVolume, FLAGS);
+            // 音量增大
+            if (null != mOnVolumeChangeListener) {
+                mOnVolumeChangeListener.onVolumeUp(streamVolume);
+            }
+        } else {
+            // 设置音量
+            mAudioManager.setStreamVolume(STREAM_TYPE, targetVolume, FLAGS);
+            // 音量减小
+            if (null != mOnVolumeChangeListener) {
+                mOnVolumeChangeListener.onVolumeDown(streamVolume);
+            }
+        }
+    }
+
+    /**
+     * 增加音量
      */
     public void volumeUp() {
-        if (STREAM_TYPE != mAudioManager.getMode()) {
-            mAudioManager.setMode(STREAM_TYPE);
-        }
+        // 获取最大音量
+        int maxVolume = mAudioManager.getStreamMaxVolume(STREAM_TYPE);
         // 当前音量
         int streamVolume = mAudioManager.getStreamVolume(STREAM_TYPE);
-        if (streamVolume < mMaxVolume) {
-            // 当前还不是最大音量 增加音量
-            mAudioManager.setStreamVolume(STREAM_TYPE, ++streamVolume, FLAGS);
-            // 音量变大
-            onVolumeUp(streamVolume);
-        } else {
+
+        if (streamVolume == maxVolume) {
             // 已经是最大音量
-            onVolumeMax(streamVolume);
+            if (null != mOnVolumeChangeListener) {
+                mOnVolumeChangeListener.onMaxVolume();
+            }
+        } else {
+            // 增加音量
+            mAudioManager.adjustStreamVolume(STREAM_TYPE, AudioManager.ADJUST_RAISE, FLAGS);
+            if (null != mOnVolumeChangeListener) {
+                streamVolume = mAudioManager.getStreamVolume(STREAM_TYPE); // ++streamVolume;
+                mOnVolumeChangeListener.onVolumeUp(streamVolume);
+            }
+        }
+
+    }
+
+    /**
+     * 减小音量
+     */
+    public void volumeDown() {
+        // 当前音量
+        int streamVolume = mAudioManager.getStreamVolume(STREAM_TYPE);
+
+        if (0 == streamVolume) {
+            // 已经是最小音量
+            if (null != mOnVolumeChangeListener) {
+                mOnVolumeChangeListener.onMinVolume();
+            }
+        } else {
+            // 减小音量
+            mAudioManager.adjustStreamVolume(STREAM_TYPE, AudioManager.ADJUST_LOWER, FLAGS);
+            if (null != mOnVolumeChangeListener) {
+                streamVolume = mAudioManager.getStreamVolume(STREAM_TYPE);
+                mOnVolumeChangeListener.onVolumeDown(streamVolume);
+            }
         }
     }
 
     /**
-     * 控制减小音量
+     * 添加音量变化的监听
+     *
+     * @param listener 音量变化的接口
      */
-    public void volumeDown() {
-        if (STREAM_TYPE != mAudioManager.getMode()) {
-            mAudioManager.setMode(STREAM_TYPE);
-        }
-        // 当前音量
-        int streamVolume = mAudioManager.getStreamVolume(STREAM_TYPE);
-        if (streamVolume > 0) {
-            // 当前还不是最小音量 减小音量
-            mAudioManager.setStreamVolume(STREAM_TYPE, --streamVolume, FLAGS);
-            // 音量变小
-            onVolumeDown(streamVolume);
-        } else {
-            // 已经是最小音量
-            onVolumeMin(streamVolume);
-        }
+    public void setOnVolumeChangeListener(OnVolumeChangeListener listener) {
+        mOnVolumeChangeListener = listener;
     }
 }
