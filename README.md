@@ -19,7 +19,7 @@ Step 2. Add the dependency
 
 ``` gradle
 dependencies {
-        compile 'com.github.kongqw:AndroidVolumeManager:1.0.1'
+        compile 'com.github.kongqw:AndroidVolumeManager:1.1.1'
 }
 ```
 
@@ -104,3 +104,8 @@ volumeManager.setMode(AudioModeEnum.STREAM_MUSIC);
 ``` java
 volumeManager.setFlag(AudioFlagEnum.FLAG_SHOW_UI);
 ```
+
+
+## 注意
+
+> `setMode()` 方法会打断 `MediaPlayer` 播放

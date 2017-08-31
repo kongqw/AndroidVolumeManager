@@ -10,18 +10,37 @@ import android.media.AudioManager;
  */
 public final class VolumeManager {
 
+    private static VolumeManager mVolumeManager;
     private OnVolumeChangeListener mOnVolumeChangeListener;
     private AudioManager mAudioManager;
     private int STREAM_TYPE = AudioManager.STREAM_MUSIC;
     private int FLAGS = AudioManager.FLAG_SHOW_UI;
 
-    public VolumeManager(Context context) {
+    /**
+     * 私有
+     *
+     * @param context context
+     */
+    private VolumeManager(Context context) {
         // 多媒体管理器
         mAudioManager = (AudioManager) context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-        // 设置音频模式
-        if (STREAM_TYPE != mAudioManager.getMode()) {
-            mAudioManager.setMode(STREAM_TYPE);
+    }
+
+    /**
+     * 获取单例
+     *
+     * @param context context
+     * @return VolumeManager
+     */
+    public static VolumeManager getInstance(Context context) {
+        if (null == mVolumeManager) {
+            synchronized (VolumeManager.class) {
+                if (null == mVolumeManager) {
+                    mVolumeManager = new VolumeManager(context);
+                }
+            }
         }
+        return mVolumeManager;
     }
 
     /**
