@@ -47,22 +47,26 @@ public final class VolumeManager {
      * Sets the audio mode.
      *
      * @param mode mode
+     * @return VolumeManager
      */
-    public void setMode(AudioModeEnum mode) {
+    public VolumeManager setMode(AudioModeEnum mode) {
         STREAM_TYPE = mode.getMode();
         // 设置音频模式
         if (STREAM_TYPE != mAudioManager.getMode()) {
             mAudioManager.setMode(STREAM_TYPE);
         }
+        return mVolumeManager;
     }
 
     /**
      * 设置Flag
      *
      * @param flag flag
+     * @return VolumeManager
      */
-    public void setFlag(AudioFlagEnum flag) {
+    public VolumeManager setFlag(AudioFlagEnum flag) {
         FLAGS = flag.getFlag();
+        return mVolumeManager;
     }
 
     /**
@@ -150,9 +154,11 @@ public final class VolumeManager {
     /**
      * 添加音量变化的监听
      *
-     * @param listener 音量变化的接口
+     * @param listener listener
+     * @return VolumeManager
      */
-    public void setOnVolumeChangeListener(OnVolumeChangeListener listener) {
+    public VolumeManager setOnVolumeChangeListener(OnVolumeChangeListener listener) {
         mOnVolumeChangeListener = listener;
+        return mVolumeManager;
     }
 }
